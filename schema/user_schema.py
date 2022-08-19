@@ -36,35 +36,36 @@ class Process(BaseModel):
         ...,
         min_length= 50,
         ) 
-    start_date: Union[date, None] = Field(...)
+    start_date: Union[datetime, None] = Field(...)
     finish_date: Union[date, None]= Field(...)
     status: bool = Field(...)
     user_id: int = Field(...)
 
 
 class Payment(BaseModel):
-    pass
-
-# payment = Table(
-#     'suscription', meta_data, 
-#     Column('id', Integer, primary_key =True),
-#     Column('name', VARCHAR(255), nullable=False),
-#     Column('payment_number', String, nullable=False),
-#     Column('expiration data', Date , nullable=False),
+    id: Optional[int] 
+    name: str = Field(
+        ...,
+        min_length= 1,
+        max_length= 255,
+        )
+    payment_number: PaymentCardNumber = Field(...)
+    sexpiration_date: Union[date, None] = Field(...)
+    
 
 class Suscriptiom(BaseModel):
-    pass
-# suscription = Table(
-#     'suscription', meta_data, 
-#     Column('id', Integer, primary_key =True),
-#     Column('suscription_Type', VARCHAR(255), nullable=False),
-
+    id: Optional[int] 
+    suscription_Type: str = Field(
+        ...,
+        min_length= 1,
+        max_length= 255,
+        )
 
 
 class UserType(BaseModel):
-    pass
-# usertype = Table(
-#     'usertype', meta_data,
-#     Column('id', Integer, primary_key =True),
-#     Column('user_Type', VARCHAR(255), nullable=False),
-# )
+    id: Optional[int] 
+    user_Type: str = Field(
+        ...,
+        min_length= 1,
+        max_length= 255,
+        )
