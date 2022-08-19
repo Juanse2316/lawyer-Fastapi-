@@ -1,10 +1,28 @@
-from datetime import datetime, date
+#python
+from datetime import  date
 from typing import Optional, Union
 
-from pydantic import BaseModel, Field, PaymentCardNumber
+#pydantic
+from pydantic import BaseModel, Field, PaymentCardNumber, EmailStr
 
-class User(BaseModel):
+
+class UserBase(BaseModel):
     id: Optional[int] 
+    email: EmailStr = Field(...)
+class UserLogin(BaseModel):
+    password: str = Field(
+        ...,
+        min_length= 1,
+        max_length= 255,
+        )
+class UserRegister(UserBase):
+    password: str = Field(
+        ...,
+        min_length= 1,
+        max_length= 255,
+        )
+class User(UserBase):
+    
     name: str = Field(
         ...,
         min_length= 1,
@@ -15,31 +33,14 @@ class User(BaseModel):
         min_length= 1,
         max_length= 255,
         )
-    password: str = Field(
-        ...,
-        min_length= 1,
-        max_length= 255,
-        )
-    payment_id: Optional[int] 
-    suscription_id: Optional[int] 
+    
+
+    
+    payment_id: Optional[int]  = Field(default=None)
+    suscription_id: Optional[int] = Field(default=None)
     user_type_id: int = Field(...)
 
 
-class Process(BaseModel):
-    id: Optional[int] 
-    tittle: str = Field(
-        ...,
-        min_length= 1,
-        max_length= 255,
-        )
-    description: str = Field(
-        ...,
-        min_length= 50,
-        ) 
-    start_date: Union[datetime, None] = Field(...)
-    finish_date: Union[date, None]= Field(...)
-    status: bool = Field(...)
-    user_id: int = Field(...)
 
 
 class Payment(BaseModel):
