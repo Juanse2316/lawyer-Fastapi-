@@ -16,7 +16,7 @@ class Process(BaseModel):
         ...,
         min_length= 50,
         ) 
-    start_date: datetime = Field(..., default=datetime.now())
+    start_date: datetime = Field(default=datetime.now())
     update_at: Optional[datetime]= Field(default=None)
     finish_date: date= Field(...)
     status: bool = Field(...)
