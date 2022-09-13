@@ -15,12 +15,7 @@ class UserLogin(BaseModel):
         min_length= 1,
         max_length= 255,
         )
-class UserRegister(UserBase):
-    password: str = Field(
-        ...,
-        min_length= 1,
-        max_length= 255,
-        )
+
 class User(UserBase):
     
     name: str = Field(
@@ -39,6 +34,13 @@ class User(UserBase):
     payment_id: Optional[int]  = Field(default=None)
     suscription_id: Optional[int] = Field(default=None)
     user_type_id: int = Field(...)
+
+class UserRegister(User):
+    password: str = Field(
+        ...,
+        min_length= 1,
+        max_length= 255,
+        )
 
 
 

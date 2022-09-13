@@ -9,10 +9,10 @@ suscription = Table(
 )
 
 payment = Table(
-    'suscription', meta_data, 
+    'payment', meta_data, 
     Column('id', Integer, primary_key =True),
     Column('name', VARCHAR(255), nullable=False),
-    Column('payment_number', String, nullable=False),
+    Column('payment_number', VARCHAR(255), nullable=False),
     Column('expiration data', Date , nullable=False),
 )
 
@@ -36,7 +36,7 @@ user_base = Table(
 )
 
 process = Table(
-    'user_base', meta_data,
+    'process', meta_data,
     Column('id', Integer, primary_key =True),
     Column('tittle', VARCHAR(255), nullable=False),
     Column('description', TEXT, nullable=False),

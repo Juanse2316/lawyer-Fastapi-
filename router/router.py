@@ -1,10 +1,14 @@
+#Python
 from typing import List
-
+#Fast api
 from fastapi import APIRouter
 from fastapi import status
-
+#Local
 from schema.user_schema import User, UserBase, UserLogin, UserRegister
 from schema.process_schema import Process
+from config.db import conn
+from model.models import user_base
+
 user = APIRouter()
 
 
@@ -20,7 +24,7 @@ user = APIRouter()
     summary="register a user",
     tags=["Users"]
 )
-def signup():
+def signup(data_user: UserRegister):
     """
     This path operation register a user in a data base
 
@@ -29,7 +33,8 @@ def signup():
             - user: UserRegister
     Return a success message
     """
-    pass
+    new_user = data_user.dict()
+    conn.execute(user_base.insert().values(new_user))
 
 
 @user.post(
