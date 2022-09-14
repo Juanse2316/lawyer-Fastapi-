@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field
 
 class Process(BaseModel):
     id: Optional[int] 
+    
     tittle: str = Field(
         ...,
         min_length= 1,
@@ -21,3 +22,4 @@ class Process(BaseModel):
     finish_date: date= Field(...)
     status: bool = Field(...)
     user_id: int = Field(...)
+    
