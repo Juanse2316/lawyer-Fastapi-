@@ -7,8 +7,8 @@ from pydantic import BaseModel, Field, PaymentCardNumber, EmailStr
 
 
 class UserBase(BaseModel):
-    # id: Optional[int] 
     email: EmailStr = Field(...)
+
 class UserLogin(BaseModel):
     password: str = Field(
         ...,
@@ -31,16 +31,12 @@ class User(UserBase):
     
 
     
-    # payment_id: Optional[int]  = Field(default=None)
-    # suscription_id: Optional[int] = Field(default=None)
-    # user_type_id: int = Field(...)
+    payment_id: Optional[int]  = Field(default=None)
+    suscription_id: Optional[int] = Field(default=None)
+    user_type_id: Optional[int] = Field(default=None)
 
-class UserRegister(User):
-    password: str = Field(
-        ...,
-        min_length= 1,
-        max_length= 255,
-        )
+class UserRegister(User, UserLogin):
+	pass
 
 
 

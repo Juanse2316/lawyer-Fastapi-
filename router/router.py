@@ -1,14 +1,13 @@
 #Python
 from typing import List
-import json
 #Fast api
 from fastapi import APIRouter
 from fastapi import status
-from fastapi import Body
+from werkzeug.security import generate_password_hash, check_password_hash
 #Local
 from schema.user_schema import User, UserBase, UserLogin, UserRegister
 from schema.process_schema import Process
-from config.db import conn
+from config.db import engine
 from model.models import user_base
 
 user = APIRouter()
@@ -19,6 +18,8 @@ user = APIRouter()
 
 
 ##User
+
+###Create a user 
 @user.post(
     path='/api/signup',
     response_model=User,
@@ -35,11 +36,14 @@ def signup(data_user: UserRegister):
             - user: UserRegister
     Return a success message
     """
-    new_user = data_user.dict()
-    conn.execute(user_base.insert().values(new_user))
-    return data_user
+    with engine.connect() as conn:
+        new_user = data_user.dict()
+        new_user["password"] = generate_password_hash(data_user.password, "pbkdf2:sha256:30", 40)
+        conn.execute(user_base.insert().values(new_user))
+    
+        return data_user
 
-
+###Login a user 
 @user.post(
     path='/api/login',
     response_model=User,
@@ -52,7 +56,7 @@ def login():
     """
     pass
 
-
+###Show all users 
 @user.get(
     path='/api/users',
     response_model=List[User],
@@ -63,9 +67,12 @@ def login():
 def show_all_users():
     """
     """
-    pass
+    with engine.connect() as conn:
+        result = conn.execute(user_base.select()).fetchall()
 
+        return result
 
+###Show a user
 @user.get(
     path='/api/user/{user_id}',
     response_model=User,
@@ -73,17 +80,20 @@ def show_all_users():
     summary="Show a user",
     tags=["Users"]
 )
-def show_a_user():
+def show_a_user(user_id: str):
     """
     """
-    pass
+    with engine.connect() as conn:
+        result = conn.execute(user_base.select().where(user_base.c.id== user_id)).first()
 
+        return result
 
+###Delete a user
 @user.delete(
     path='/api/user/{user_id}/delete',
     response_model=User,
     status_code= status.HTTP_200_OK,
-    summary="Show a user",
+    summary="Delete a user",
     tags=["Users"]
 )
 def delete_a_user():
@@ -91,23 +101,27 @@ def delete_a_user():
     """
     pass
 
-
+###Update a user
 @user.put(
     path='/api/user/{user_id}/update',
     response_model=User,
     status_code= status.HTTP_200_OK,
-    summary="Show a user",
+    summary="Update a user",
     tags=["Users"]
 )
-def delete_a_update():
+def update_a_update(data_update:UserRegister, user_id: str):
     """
     """
-    pass
+    with engine.connect() as conn:
+        encryp_password = generate_password_hash(data_update.password, "pbkdf2:sha256:30", 40)
+        result = conn.execute(user_base.update().values(name=data_update.name,last_name=data_update.last_name, password= encryp_password).where(user_base.c.id== user_id))
+        result= conn.execute(user_base.select().where(user_base.c.id== user_id)).first()
+        return result
 
 ##Process
 
 @user.get(path='/',
-    # response_model=List[Process],
+    response_model=List[Process],
     status_code= status.HTTP_200_OK,
     summary="show all process",
     tags=["process"]
@@ -117,47 +131,47 @@ def root():
 
 
 @user.post(path='/api/new-process',
-    response_model=Process,
+    response_model=List[Process],
     status_code= status.HTTP_201_CREATED,
     summary="create a process",
     tags=["process"]
 )
-def create_new_process():
+def create_new_user ():
     """
     """
     pass
 
 @user.get(path='/api/process/{process_id}',
-    response_model=Process,
+    response_model=List[Process],
     status_code= status.HTTP_200_OK,
     summary="show a process",
     tags=["process"]
 )
-def show_process ():
+def create_new_user ():
     """
     """
     pass
 
 
 @user.delete(path='/api/{process_id}/delete',
-    response_model=Process,
+    response_model=List[Process],
     status_code= status.HTTP_201_CREATED,
     summary="Delete aprocess",
     tags=["process"]
 )
-def delete_a_process ():
+def create_new_user ():
     """
     """
     pass
 
 
 @user.put(path='/api/{process_id}/update',
-    response_model=Process,
+    response_model=List[Process],
     status_code= status.HTTP_201_CREATED,
     summary="Delete aprocess",
     tags=["process"]
 )
-def update_a_process ():
+def create_new_user ():
     """
     """
     pass
