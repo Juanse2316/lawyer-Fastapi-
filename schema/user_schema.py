@@ -15,7 +15,9 @@ class UserLogin(BaseModel):
         min_length= 1,
         max_length= 255,
         )
-
+    payment_id: Optional[int]  = Field(default=None)
+    suscription_id: Optional[int] = Field(default=None)
+    user_type_id: Optional[int] = Field(default=None)
 class User(UserBase):
     
     name: str = Field(
@@ -29,12 +31,6 @@ class User(UserBase):
         max_length= 255,
         )
     
-
-    
-    payment_id: Optional[int]  = Field(default=None)
-    suscription_id: Optional[int] = Field(default=None)
-    user_type_id: Optional[int] = Field(default=None)
-
 class UserRegister(User, UserLogin):
 	pass
 
@@ -48,8 +44,8 @@ class Payment(BaseModel):
         min_length= 1,
         max_length= 255,
         )
-    payment_number: PaymentCardNumber = Field(...)
-    sexpiration_date: Union[date, None] = Field(...)
+    payment_number: str= Field(...)
+    expiration_date: Union[date, None] = Field(...)
     
 
 class Suscriptiom(BaseModel):

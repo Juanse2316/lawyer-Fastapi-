@@ -13,7 +13,7 @@ payment = Table(
     Column('id', Integer, primary_key =True),
     Column('name', VARCHAR(255), nullable=False),
     Column('payment_number', VARCHAR(255), nullable=False),
-    Column('expiration data', Date , nullable=False),
+    Column('expiration_date', Date , nullable=False),
 )
 
 

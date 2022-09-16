@@ -3,12 +3,13 @@ from typing import List
 #Fast api
 from fastapi import APIRouter
 from fastapi import status
+from fastapi import Body
 from werkzeug.security import generate_password_hash, check_password_hash
 #Local
-from schema.user_schema import User, UserBase, UserLogin, UserRegister
+from schema.user_schema import User, UserRegister, Payment
 from schema.process_schema import Process
 from config.db import engine
-from model.models import user_base
+from model.models import user_base, payment
 
 user = APIRouter()
 
@@ -27,19 +28,25 @@ user = APIRouter()
     summary="register a user",
     tags=["Users"]
 )
-def signup(data_user: UserRegister):
+def signup(data_user: UserRegister, data_payment: Payment ):
     """
     This path operation register a user in a data base
 
     Parameters:
         - Request body parameter
             - user: UserRegister
-    Return a success message
+    Return a json with the basic infromation:
+
     """
     with engine.connect() as conn:
         new_user = data_user.dict()
         new_user["password"] = generate_password_hash(data_user.password, "pbkdf2:sha256:30", 40)
         conn.execute(user_base.insert().values(new_user))
+        
+        
+        new_payment = data_payment.dict()
+        new_payment["expiration_date"] = str(new_payment["expiration_date"])
+        conn.execute(payment.insert().values(new_payment))
     
         return data_user
 
@@ -66,6 +73,12 @@ def login():
 )
 def show_all_users():
     """
+    This path operation shows all users in the app
+
+    Parameters:
+        - Request body parameter
+            - user: UserRegister
+    Return a json with the basic infromation
     """
     with engine.connect() as conn:
         result = conn.execute(user_base.select()).fetchall()
@@ -121,7 +134,7 @@ def update_a_update(data_update:UserRegister, user_id: str):
 ##Process
 
 @user.get(path='/',
-    response_model=List[Process],
+    # response_model=List[Process],
     status_code= status.HTTP_200_OK,
     summary="show all process",
     tags=["process"]
