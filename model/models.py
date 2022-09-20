@@ -30,9 +30,9 @@ user_base = Table(
     Column('last_name', VARCHAR(255), nullable=False),
     Column('password', String(255), nullable=False),
     Column('email', VARCHAR(255), nullable=False ),
-    Column('payment_id', Integer, ForeignKey('payment.id')), 
-    Column('suscription_id', Integer, ForeignKey('suscription.id')),
-    Column('user_type_id', Integer, ForeignKey('usertype.id')),
+    Column('payment_id', Integer, ForeignKey('payment.id'), nullable = False), 
+    Column('suscription_id', Integer, ForeignKey('suscription.id'), nullable = False),
+    Column('user_type_id', Integer, ForeignKey('usertype.id'), nullable = False),
 )
 
 process = Table(
@@ -43,7 +43,7 @@ process = Table(
     Column('start date', TIMESTAMP),
     Column('finish date', Date),
     Column('status', BOOLEAN),
-    Column('user_base_id', Integer, ForeignKey('user_base.id'))   
+    Column('user_base_id', Integer, ForeignKey('user_base.id'), nullable = False)   
 )
 
 meta_data.create_all(engine)

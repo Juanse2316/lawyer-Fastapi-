@@ -36,7 +36,9 @@ def signup(data_user: UserRegister, data_payment: Payment ):
         - Request body parameter
             - user: UserRegister
     Return a json with the basic infromation:
-
+        - email: EmailStr
+        - name: str
+        - last name: str
     """
     with engine.connect() as conn:
         new_user = data_user.dict()
@@ -76,9 +78,11 @@ def show_all_users():
     This path operation shows all users in the app
 
     Parameters:
-        - Request body parameter
-            - user: UserRegister
-    Return a json with the basic infromation
+        
+    Return a json with the basic infromation:
+        - email: EmailStr
+        - name: str
+        - last name: str
     """
     with engine.connect() as conn:
         result = conn.execute(user_base.select()).fetchall()
@@ -87,7 +91,7 @@ def show_all_users():
 
 ###Show a user
 @user.get(
-    path='/api/user/{user_id}',
+    path='/api/users/{user_id}',
     response_model=User,
     status_code= status.HTTP_200_OK,
     summary="Show a user",
@@ -104,19 +108,21 @@ def show_a_user(user_id: str):
 ###Delete a user
 @user.delete(
     path='/api/user/{user_id}/delete',
-    response_model=User,
     status_code= status.HTTP_200_OK,
     summary="Delete a user",
     tags=["Users"]
 )
-def delete_a_user():
+def delete_a_user(user_id: str):
     """
     """
-    pass
+    with engine.connect() as conn:
+        conn.execute(user_base.delete().where(user_base.c.id== user_id))
+        conn.execute(payment.delete().where(user_base.c.id== user_id))
+        return {"mensage": "user delete"}
 
 ###Update a user
 @user.put(
-    path='/api/user/{user_id}/update',
+    path='/api/users/{user_id}/update',
     response_model=User,
     status_code= status.HTTP_200_OK,
     summary="Update a user",

@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, PaymentCardNumber, EmailStr
 
 
 class UserBase(BaseModel):
+    id: Optional[int]
     email: EmailStr = Field(...)
 
 class UserLogin(BaseModel):
