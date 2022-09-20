@@ -6,10 +6,10 @@ from fastapi import status
 from fastapi import Body
 from werkzeug.security import generate_password_hash, check_password_hash
 #Local
-from schema.user_schema import User, UserRegister, Payment
+from schema.user_schema import Suscriptiom, User, UserRegister, Payment
 from schema.process_schema import Process
 from config.db import engine
-from model.models import user_base, payment
+from model.models import user_base, payment, suscription
 
 user = APIRouter()
 
@@ -194,3 +194,42 @@ def create_new_user ():
     """
     """
     pass
+
+##sucription 
+
+### crate suscription
+@user.post(
+    path='/api/suscription',
+    response_model=Suscriptiom,
+    status_code= status.HTTP_201_CREATED,
+    summary="create  a suscription",
+    tags=["Suscriptiom"]
+)
+def signup(suscription_data: Suscriptiom ):
+    """
+    This path operation create a suscription in a data base
+
+    Parameters:
+        - Request body parameter
+            - user: UserRegister
+    Return a json with the basic infromation:
+        - email: EmailStr
+        - name: str
+        - last name: str
+    """
+    with engine.connect() as conn:
+        new_user = suscription_data.dict()
+        conn.execute(suscription.insert().values(new_user))
+        
+        return suscription_data
+
+## delete suscription 
+
+
+
+##user type
+
+### crate user type
+
+
+## delete user type 
