@@ -47,7 +47,7 @@ class Payment(BaseModel):
         )
     payment_number: str= Field(...)
     expiration_date: Union[date, None] = Field(...)
-    user_id : Optional[int] = Field(default= None)
+    user_id : Optional[int] 
     
 
 class Suscriptiom(BaseModel):

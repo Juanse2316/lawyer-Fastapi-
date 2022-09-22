@@ -28,7 +28,7 @@ user = APIRouter()
     summary="register a user",
     tags=["Users"]
 )
-def signup(data_user: UserRegister,):
+def signup(data_user: UserRegister):
     """
     This path operation register a user in a data base
 
@@ -44,16 +44,19 @@ def signup(data_user: UserRegister,):
         new_user = data_user.dict()
         new_user["password"] = generate_password_hash(data_user.password, "pbkdf2:sha256:30", 40)
         conn.execute(user_base.insert().values(new_user))
-        return data_user
-###Create payment for a user
+
+
+        return {"mensage":"created"}
+
+###Payment
 @user.post(
     path='/api/payment',
-    response_model=User,
+    response_model=Payment,
     status_code= status.HTTP_201_CREATED,
     summary="create a payment",
     tags=["Users"]
 )
-def signup(data_payment: Payment ):
+def signup( data_payment: Payment ):
     """
     This path operation register a user in a data base
 
@@ -66,13 +69,11 @@ def signup(data_payment: Payment ):
         - last name: str
     """
     with engine.connect() as conn:
-        
         new_payment = data_payment.dict()
         new_payment["expiration_date"] = str(new_payment["expiration_date"])
         conn.execute(payment.insert().values(new_payment))
     
         return {"mensage":"created"}
-
 ###Login a user 
 @user.post(
     path='/api/login',
