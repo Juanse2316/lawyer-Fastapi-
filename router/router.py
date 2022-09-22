@@ -6,10 +6,10 @@ from fastapi import status
 from fastapi import Body
 from werkzeug.security import generate_password_hash, check_password_hash
 #Local
-from schema.user_schema import Suscriptiom, User, UserRegister, Payment
+from schema.user_schema import Suscriptiom, User, UserRegister, Payment, UserType
 from schema.process_schema import Process
 from config.db import engine
-from model.models import user_base, payment, suscription
+from model.models import user_base, payment, suscription, usertype, process
 
 user = APIRouter()
 
@@ -28,7 +28,7 @@ user = APIRouter()
     summary="register a user",
     tags=["Users"]
 )
-def signup(data_user: UserRegister, data_payment: Payment ):
+def signup(data_user: UserRegister,):
     """
     This path operation register a user in a data base
 
@@ -44,13 +44,34 @@ def signup(data_user: UserRegister, data_payment: Payment ):
         new_user = data_user.dict()
         new_user["password"] = generate_password_hash(data_user.password, "pbkdf2:sha256:30", 40)
         conn.execute(user_base.insert().values(new_user))
-        
+        return data_user
+###Create payment for a user
+@user.post(
+    path='/api/payment',
+    response_model=User,
+    status_code= status.HTTP_201_CREATED,
+    summary="create a payment",
+    tags=["Users"]
+)
+def signup(data_payment: Payment ):
+    """
+    This path operation register a user in a data base
+
+    Parameters:
+        - Request body parameter
+            - user: UserRegister
+    Return a json with the basic infromation:
+        - email: EmailStr
+        - name: str
+        - last name: str
+    """
+    with engine.connect() as conn:
         
         new_payment = data_payment.dict()
         new_payment["expiration_date"] = str(new_payment["expiration_date"])
         conn.execute(payment.insert().values(new_payment))
     
-        return data_user
+        return {"mensage":"created"}
 
 ###Login a user 
 @user.post(
@@ -203,7 +224,7 @@ def create_new_user ():
     response_model=Suscriptiom,
     status_code= status.HTTP_201_CREATED,
     summary="create  a suscription",
-    tags=["Suscriptiom"]
+    tags=["Suscription"]
 )
 def signup(suscription_data: Suscriptiom ):
     """
@@ -224,12 +245,58 @@ def signup(suscription_data: Suscriptiom ):
         return suscription_data
 
 ## delete suscription 
-
+@user.delete(
+    path='/api/suscription/{suscription_id}/delete',
+    status_code= status.HTTP_200_OK,
+    summary="Delete a suscription",
+    tags=["Suscription"]
+)
+def delete_a_user(suscription_id: str):
+    """
+    """
+    with engine.connect() as conn:
+        conn.execute(suscription.delete().where(suscription.c.id== suscription_id))
+        return {"mensage": "user delete"}
 
 
 ##user type
 
 ### crate user type
+@user.post(
+    path='/api/usertype/create',
+    response_model=UserType,
+    status_code= status.HTTP_201_CREATED,
+    summary="create  a suscription",
+    tags=["Usertype"]
+)
+def signup(usertype_data: UserType ):
+    """
+    This path operation create a suscription in a data base
 
+    Parameters:
+        - Request body parameter
+            - user: UserRegister
+    Return a json with the basic infromation:
+        - email: EmailStr
+        - name: str
+        - last name: str
+    """
+    with engine.connect() as conn:
+        new_user = usertype_data.dict()
+        conn.execute(usertype.insert().values(new_user))
+        
+        return usertype_data
 
 ## delete user type 
+@user.delete(
+    path='/api/usertype/{usertype_id}/delete',
+    status_code= status.HTTP_200_OK,
+    summary="Delete a suscription",
+    tags=["Usertype"]
+)
+def delete_a_user(usertype_id: str):
+    """
+    """
+    with engine.connect() as conn:
+        conn.execute(usertype.delete().where(usertype.c.id== usertype_id))
+        return {"mensage": "Type deleted"}

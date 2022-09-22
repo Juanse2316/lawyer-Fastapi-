@@ -1,4 +1,5 @@
 #python
+from dataclasses import field
 from datetime import  date
 from typing import Optional, Union
 
@@ -16,9 +17,8 @@ class UserLogin(BaseModel):
         min_length= 1,
         max_length= 255,
         )
-    payment_id: Optional[int]  = Field(default=None)
-    suscription_id: Optional[int] = Field(default=None)
-    user_type_id: Optional[int] = Field(default=None)
+    suscription_id: int = Field(...)
+    user_type_id: int = Field(...)
 class User(UserBase):
     
     name: str = Field(
@@ -47,6 +47,7 @@ class Payment(BaseModel):
         )
     payment_number: str= Field(...)
     expiration_date: Union[date, None] = Field(...)
+    user_id : Optional[int] = Field(default= None)
     
 
 class Suscriptiom(BaseModel):
