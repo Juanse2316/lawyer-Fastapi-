@@ -5,6 +5,7 @@ from fastapi import APIRouter
 from fastapi import status
 from fastapi import Body
 from werkzeug.security import generate_password_hash, check_password_hash
+from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_200_OK
 #Local
 from schema.user_schema import Suscriptiom, User, UserRegister, Payment, UserType, UserLogin
 from schema.process_schema import Process
@@ -77,7 +78,7 @@ def payments( data_payment: Payment ):
 ###Login a user 
 @user.post(
     path='/api/login',
-    response_model=User,
+    response_model=dict,
     status_code= status.HTTP_200_OK,
     summary="login a user",
     tags=["Users"]
@@ -89,10 +90,19 @@ def login(data_user:UserLogin):
         result = conn.execute(user_base.select().where(user_base.c.email == data_user.email)).first()
     
         if result != None:
-            check_password = check_password_hash(data_user.password, result[3] )
-            print(check_password)
+            check_password = check_password_hash(result[3],data_user.password)
+            
+            if check_password:
+                return {
+                    "status": HTTP_200_OK,
+                    "message": "Access success"
+                }
 
-    
+        return {
+                    "status": HTTP_401_UNAUTHORIZED,
+                    "message": "Access denied"
+                }
+
 
 ###Show all users 
 @user.get(
