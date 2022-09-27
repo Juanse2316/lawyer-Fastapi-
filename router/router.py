@@ -6,7 +6,7 @@ from fastapi import status
 from fastapi import Body
 from werkzeug.security import generate_password_hash, check_password_hash
 #Local
-from schema.user_schema import Suscriptiom, User, UserRegister, Payment, UserType
+from schema.user_schema import Suscriptiom, User, UserRegister, Payment, UserType, UserLogin
 from schema.process_schema import Process
 from config.db import engine
 from model.models import user_base, payment, suscription, usertype, process
@@ -28,7 +28,7 @@ user = APIRouter()
     summary="register a user",
     tags=["Users"]
 )
-def signup(data_user: UserRegister):
+def signup(data_user: UserRegister ):
     """
     This path operation register a user in a data base
 
@@ -56,7 +56,7 @@ def signup(data_user: UserRegister):
     summary="create a payment",
     tags=["Users"]
 )
-def signup( data_payment: Payment ):
+def payments( data_payment: Payment ):
     """
     This path operation register a user in a data base
 
@@ -82,10 +82,17 @@ def signup( data_payment: Payment ):
     summary="login a user",
     tags=["Users"]
 )
-def login():
+def login(data_user:UserLogin):
     """
     """
-    pass
+    with engine.connect() as conn:
+        result = conn.execute(user_base.select().where(user_base.c.email == data_user.email)).first()
+    
+        if result != None:
+            check_password = check_password_hash(data_user.password, result[3] )
+            print(check_password)
+
+    
 
 ###Show all users 
 @user.get(

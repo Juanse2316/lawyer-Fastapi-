@@ -1,6 +1,7 @@
 #python
 from dataclasses import field
 from datetime import  date
+from email.mime import base
 from typing import Optional, Union
 
 #pydantic
@@ -10,15 +11,14 @@ from pydantic import BaseModel, Field, PaymentCardNumber, EmailStr
 class UserBase(BaseModel):
     id: Optional[int]
     email: EmailStr = Field(...)
-
-class UserLogin(BaseModel):
+    
+class UserLogin(UserBase):
     password: str = Field(
         ...,
         min_length= 1,
         max_length= 255,
         )
-    suscription_id: int = Field(...)
-    user_type_id: int = Field(...)
+    
 class User(UserBase):
     
     name: str = Field(
@@ -32,8 +32,12 @@ class User(UserBase):
         max_length= 255,
         )
     
+    
+
 class UserRegister(User, UserLogin):
-	pass
+	
+    suscription_id: int = Field(...)
+    user_type_id: int = Field(...)
 
 
 
