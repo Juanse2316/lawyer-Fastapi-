@@ -46,7 +46,7 @@ def signup(data_user: UserRegister ):
         conn.execute(user_base.insert().values(new_user))
 
 
-        return {"mensage":"created"}
+    return data_user
 
 ###Payment
 @user.post(
@@ -73,7 +73,7 @@ def payments( data_payment: Payment ):
         new_payment["expiration_date"] = str(new_payment["expiration_date"])
         conn.execute(payment.insert().values(new_payment))
     
-        return {"mensage":"created"}
+    return  data_payment
 ###Login a user 
 @user.post(
     path='/api/login',
