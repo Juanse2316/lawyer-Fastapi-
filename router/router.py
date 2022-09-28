@@ -1,5 +1,6 @@
 #Python
 from typing import List
+from datetime import datetime
 #Fast api
 from fastapi import APIRouter
 from fastapi import status
@@ -267,15 +268,18 @@ def delta_a_process (process_id: str):
         return {"mensage": "user delete"}
 ### update a process
 @user.put(path='/api/{process_id}/update',
-    response_model=List[Process],
+    response_model=Process,
     status_code= status.HTTP_201_CREATED,
     summary="Delete aprocess",
     tags=["process"]
 )
-def create_new_user ():
+def uodate_a_process(process_data: Process, process_id:str):
     """
     """
-    pass
+    with engine.connect() as conn:
+        result = conn.execute(process.update().values(tittle=process_data.tittle,description=process_data.description,status=process_data.status, update_at=datetime.now()).where(process.c.id== process_id))
+        result= conn.execute(process.select().where(process.c.id== process_id)).first()
+        return result
 
 ##sucription 
 
