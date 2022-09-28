@@ -244,7 +244,7 @@ def create_new_user (process_data:Process):
     summary="show a process",
     tags=["process"]
 )
-def create_new_user (process_id: str):
+def show_a_process(process_id: str):
     """
     """
     with engine.connect() as conn:
@@ -254,16 +254,17 @@ def create_new_user (process_id: str):
 
 ### delete a process
 @user.delete(path='/api/{process_id}/delete',
-    response_model=List[Process],
-    status_code= status.HTTP_201_CREATED,
+    status_code= status.HTTP_200_OK,
     summary="Delete aprocess",
     tags=["process"]
 )
-def create_new_user ():
+def delta_a_process (process_id: str):
     """
     """
-    pass
-
+    with engine.connect() as conn:
+        conn.execute(process.delete().where(process.c.id== process_id))
+        
+        return {"mensage": "user delete"}
 ### update a process
 @user.put(path='/api/{process_id}/update',
     response_model=List[Process],
