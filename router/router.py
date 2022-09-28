@@ -239,15 +239,18 @@ def create_new_user (process_data:Process):
 
 ### show a process
 @user.get(path='/api/process/{process_id}',
-    response_model=List[Process],
+    response_model=Process,
     status_code= status.HTTP_200_OK,
     summary="show a process",
     tags=["process"]
 )
-def create_new_user ():
+def create_new_user (process_id: str):
     """
     """
-    pass
+    with engine.connect() as conn:
+        result = conn.execute(process.select().where(process.c.id== process_id)).first()
+
+        return result
 
 ### delete a process
 @user.delete(path='/api/{process_id}/delete',
