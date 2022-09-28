@@ -40,10 +40,11 @@ process = Table(
     Column('id', Integer, primary_key =True),
     Column('tittle', VARCHAR(255), nullable=False),
     Column('description', TEXT, nullable=False),
-    Column('start date', TIMESTAMP),
-    Column('finish date', Date),
+    Column('start_date', TIMESTAMP),
+    Column('update_at', TIMESTAMP),
+    Column('finish_date', Date),
     Column('status', BOOLEAN),
-    Column('user_base_id', Integer, ForeignKey('user_base.id'), nullable = False)   
+    Column('user_id', Integer, ForeignKey('user_base.id'), nullable = False)   
 )
 
 meta_data.create_all(engine)

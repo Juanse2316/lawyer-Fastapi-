@@ -177,7 +177,7 @@ def update_a_update(data_update:UserRegister, user_id: str):
         return result
 
 ##Process
-
+### show all process
 @user.get(path='/',
     # response_model=List[Process],
     status_code= status.HTTP_200_OK,
@@ -187,18 +187,44 @@ def update_a_update(data_update:UserRegister, user_id: str):
 def root():
     return {"message": "Hi I'm a God"}
 
-
+### create a process
 @user.post(path='/api/new-process',
-    response_model=List[Process],
+    response_model=Process,
     status_code= status.HTTP_201_CREATED,
     summary="create a process",
     tags=["process"]
 )
-def create_new_user ():
-    """
-    """
-    pass
+def create_new_user (process_data:Process):
 
+    """
+    This path operation register a user in a data base
+
+    Parameters:
+        - Request body parameter
+            - : Process
+    Return a json with the basic infromation
+        - tittle: str 
+        - description: str 
+        - start_date: datetime 
+        - update_at: Optional[datetime]
+        - finish_date: date
+        - status: bool 
+        - user_id: int  
+    """
+    with engine.connect() as conn:
+        process_dict = process_data.dict()
+        process_dict["start_date"] = str(process_dict["start_date"])
+
+        if process_dict["update_at"]:
+            process_dict["update_at"]= str(process_dict["update_at"])
+
+        conn.execute(process.insert().values(process_dict))
+        
+
+
+    return process_data
+
+### show a process
 @user.get(path='/api/process/{process_id}',
     response_model=List[Process],
     status_code= status.HTTP_200_OK,
@@ -210,7 +236,7 @@ def create_new_user ():
     """
     pass
 
-
+### delete a process
 @user.delete(path='/api/{process_id}/delete',
     response_model=List[Process],
     status_code= status.HTTP_201_CREATED,
@@ -222,7 +248,7 @@ def create_new_user ():
     """
     pass
 
-
+### update a process
 @user.put(path='/api/{process_id}/update',
     response_model=List[Process],
     status_code= status.HTTP_201_CREATED,
