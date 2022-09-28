@@ -179,13 +179,26 @@ def update_a_update(data_update:UserRegister, user_id: str):
 ##Process
 ### show all process
 @user.get(path='/',
-    # response_model=List[Process],
+    response_model=List[Process],
     status_code= status.HTTP_200_OK,
     summary="show all process",
     tags=["process"]
 )
 def root():
-    return {"message": "Hi I'm a God"}
+    """
+    This path operation shows all process in the app
+
+    Parameters:
+        
+    Return a json with the basic infromation:
+        - email: EmailStr
+        - name: str
+        - last name: str
+    """
+    with engine.connect() as conn:
+        result = conn.execute(process.select()).fetchall()
+
+        return result
 
 ### create a process
 @user.post(path='/api/new-process',
