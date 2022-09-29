@@ -49,7 +49,7 @@ class Payment(BaseModel):
         min_length= 1,
         max_length= 255,
         )
-    payment_number: str= Field(...)
+    payment_number: PaymentCardNumber= Field(...)
     expiration_date: Union[date, None] = Field(...)
     user_id : Optional[int] = Field(default= None)
     
