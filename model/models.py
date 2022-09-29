@@ -19,7 +19,7 @@ payment = Table(
     'payment', meta_data, 
     Column('id', Integer, primary_key =True),
     Column('name', VARCHAR(255), nullable=False),
-    Column('payment_number', VARCHAR(255), nullable=False),
+    Column('payment_number', VARCHAR(255), nullable=False, unique=True),
     Column('expiration_date', Date , nullable=False),
     Column('user_id', Integer, ForeignKey('user_base.id'), nullable = False)
 )
@@ -30,7 +30,7 @@ user_base = Table(
     Column('name', VARCHAR(255), nullable=False),
     Column('last_name', VARCHAR(255), nullable=False),
     Column('password', String(255), nullable=False),
-    Column('email', VARCHAR(255), nullable=False ), 
+    Column('email', VARCHAR(255), nullable=False, unique=True ), 
     Column('suscription_id', Integer, ForeignKey('suscription.id'), nullable = False),
     Column('user_type_id', Integer, ForeignKey('usertype.id'), nullable = False),
 )
