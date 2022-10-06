@@ -1,3 +1,4 @@
 /env/
 __pycache__
-server.sh enviroment_acvtivate.sh
+server.sh 
+enviroment_acvtivate.sh
