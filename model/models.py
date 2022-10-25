@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column, ForeignKey
 from sqlalchemy.sql.sqltypes import Integer, VARCHAR, TIMESTAMP, BOOLEAN, String, TEXT, Date
-from config.db import engine, meta_data
+from config.db import meta_data, pool
 
 suscription = Table(
     'suscription', meta_data, 
@@ -47,5 +47,5 @@ process = Table(
     Column('user_id', Integer, ForeignKey('user_base.id'), nullable = False)   
 )
 
-meta_data.create_all(engine)
+meta_data.create_all(pool)
 
