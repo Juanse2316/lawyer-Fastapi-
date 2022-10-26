@@ -13,8 +13,8 @@ def getconn() -> pymysql.connections.Connection:
     conn: pymysql.connections.Connection = connector.connect(
         "fastapi-lawyer-project1:us-central1:lawyerdb",
         "pymysql",
-        user="request",
-        password="19072212",
+        user="root",
+        password="toor",
         db="fastapidb"
     )
     return conn
