@@ -10,11 +10,11 @@ connector = Connector()
 # function to return the database connection
 def getconn() -> pymysql.connections.Connection:
     conn: pymysql.connections.Connection = connector.connect(
-        "fastapi-lawyer-project1:us-central1:lawyerdb",
+        "flask-project-357819:us-central1:firstdb",
         "pymysql",
         user="request",
         password="19072212",
-        db="fastapidb"
+        db="my_bd"
     )
     return conn
 
