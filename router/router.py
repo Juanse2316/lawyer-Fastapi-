@@ -10,7 +10,7 @@ from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_200_OK
 #Local
 from schema.user_schema import Suscriptiom, User, UserRegister, Payment, UserType, UserLogin
 from schema.process_schema import Process
-from config.db import pool
+from config.db import engine
 from model.models import user_base, payment, suscription, usertype, process
 
 user = APIRouter()
@@ -42,7 +42,7 @@ def signup(data_user: UserRegister ):
         - name: str
         - last name: str
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         new_user = data_user.dict()
         new_user["password"] = generate_password_hash(data_user.password, "pbkdf2:sha256:30", 40)
         conn.execute(user_base.insert().values(new_user))
@@ -70,7 +70,7 @@ def payments( data_payment: Payment ):
         - name: str
         - last name: str
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         new_payment = data_payment.dict()
         new_payment["expiration_date"] = str(new_payment["expiration_date"])
         conn.execute(payment.insert().values(new_payment))
@@ -87,7 +87,7 @@ def payments( data_payment: Payment ):
 def login(data_user:UserLogin):
     """
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         result = conn.execute(user_base.select().where(user_base.c.email == data_user.email)).first()
     
         if result != None:
@@ -124,7 +124,7 @@ def show_all_users():
         - name: str
         - last name: str
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         result = conn.execute(user_base.select()).fetchall()
 
         return result
@@ -140,7 +140,7 @@ def show_all_users():
 def show_a_user(user_id: str):
     """
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         result = conn.execute(user_base.select().where(user_base.c.id== user_id)).first()
 
         return result
@@ -155,7 +155,7 @@ def show_a_user(user_id: str):
 def delete_a_user(user_id: str):
     """
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         conn.execute(user_base.delete().where(user_base.c.id== user_id))
         conn.execute(payment.delete().where(user_base.c.id== user_id))
         return {"mensage": "user delete"}
@@ -171,7 +171,7 @@ def delete_a_user(user_id: str):
 def update_a_update(data_update:UserRegister, user_id: str):
     """
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         encryp_password = generate_password_hash(data_update.password, "pbkdf2:sha256:30", 40)
         result = conn.execute(user_base.update().values(name=data_update.name,last_name=data_update.last_name, password= encryp_password).where(user_base.c.id== user_id))
         result= conn.execute(user_base.select().where(user_base.c.id== user_id)).first()
@@ -196,7 +196,7 @@ def root():
         - name: str
         - last name: str
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         result = conn.execute(process.select()).fetchall()
 
         return result
@@ -225,7 +225,7 @@ def create_new_user (process_data:Process):
         - status: bool 
         - user_id: int  
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         process_dict = process_data.dict()
         process_dict["start_date"] = str(process_dict["start_date"])
 
@@ -248,7 +248,7 @@ def create_new_user (process_data:Process):
 def show_a_process(process_id: str):
     """
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         result = conn.execute(process.select().where(process.c.id== process_id)).first()
 
         return result
@@ -262,7 +262,7 @@ def show_a_process(process_id: str):
 def delta_a_process (process_id: str):
     """
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         conn.execute(process.delete().where(process.c.id== process_id))
         
         return {"mensage": "user delete"}
@@ -276,7 +276,7 @@ def delta_a_process (process_id: str):
 def uodate_a_process(process_data: Process, process_id:str):
     """
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         result = conn.execute(process.update().values(tittle=process_data.tittle,description=process_data.description,status=process_data.status, update_at=datetime.now()).where(process.c.id== process_id))
         result= conn.execute(process.select().where(process.c.id== process_id)).first()
         return result
@@ -303,7 +303,7 @@ def signup(suscription_data: Suscriptiom ):
         - name: str
         - last name: str
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         new_user = suscription_data.dict()
         conn.execute(suscription.insert().values(new_user))
         
@@ -319,7 +319,7 @@ def signup(suscription_data: Suscriptiom ):
 def delete_a_user(suscription_id: str):
     """
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         conn.execute(suscription.delete().where(suscription.c.id== suscription_id))
         return {"mensage": "user delete"}
 
@@ -346,7 +346,7 @@ def signup(usertype_data: UserType ):
         - name: str
         - last name: str
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         new_user = usertype_data.dict()
         conn.execute(usertype.insert().values(new_user))
         
@@ -362,6 +362,6 @@ def signup(usertype_data: UserType ):
 def delete_a_user(usertype_id: str):
     """
     """
-    with pool.connect() as conn:
+    with engine.connect() as conn:
         conn.execute(usertype.delete().where(usertype.c.id== usertype_id))
         return {"mensage": "Type deleted"}
