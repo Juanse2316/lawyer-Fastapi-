@@ -1,28 +1,8 @@
+from sqlalchemy import create_engine, MetaData
 
-from google.cloud.sql.connector import Connector
-import sqlalchemy
-from sqlalchemy import MetaData
+# engine = create_engine("mysql+pymysql://root:toor@localhost:3306/fastapi")
+engine = create_engine("mysql+pymysql://sql10527362:5BEpYlfghy@sql10.freesqldatabase.com:3306/sql10527362")
 
-import pymysql
-
-# initialize Connector object
-connector = Connector()
-
-# function to return the database connection
-def getconn() -> pymysql.connections.Connection:
-    conn: pymysql.connections.Connection = connector.connect(
-        "fastapi-lawyer-project1:us-central1:lawyerdb",
-        "pymysql",
-        user="request",
-        password="19072212",
-        db="fastapidb"
-    )
-    return conn
-
-# create connection pool
-pool = sqlalchemy.create_engine(
-    "mysql+pymysql://",
-    creator=getconn,
-)
+conn = engine.connect()
 
 meta_data = MetaData()
