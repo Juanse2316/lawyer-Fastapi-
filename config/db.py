@@ -27,8 +27,9 @@ def getconn() -> pymysql.connections.Connection:
 
 # create connection pool
 pool = sqlalchemy.create_engine(
-    "mysql+pymysql://",
+    "mysql+pymysql://root:toor@/fastapi?unix_socket=/cloudsql/fastapi-lawyer1",
     creator=getconn,
 )
 
 meta_data = MetaData()
+#  mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=/cloudsql/<cloud_sql_instance_name>
