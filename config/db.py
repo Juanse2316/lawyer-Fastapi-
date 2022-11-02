@@ -1,38 +1,31 @@
 from google.cloud.sql.connector import Connector
-import google.auth
-from google.auth.transport.requests import Request
-import sqlalchemy
+
 from sqlalchemy import MetaData
+import sqlalchemy
+from google.cloud.sql.connector import Connector
+import sqlalchemy
 
-# IAM database user parameter (IAM user's email before the "@" sign, mysql truncates usernames)
-# ex. IAM user with email "demo-user@test.com" would have database user name "demo-user"
-IAM_USER = 'ladinomendietajuanse'[0].split("@")[0]
-
-# get application default credentials of IAM user (current logged in user)
-credentials, project = google.auth.default()
-
-# refresh credentials if expired
-if not credentials.valid:
-      request = Request()
-      credentials.refresh(request)
-
-# initialize connector
+INSTANCE_CONNECTION_NAME = f"fastapi-lawyer-project1:us-central1:fastapi-lawyer1" # i.e demo-project:us-central1:demo-instance		
+DB_USER = "batman"
+DB_PASS = "robin"
+DB_NAME = "fastapi"
+# initialize Connector object
 connector = Connector()
 
-# getconn now using IAM user and OAuth2 token as password
+# function to return the database connection object
 def getconn():
     conn = connector.connect(
-      'fastapi-lawyer-project1:us-central1:fastapi-lawyer1',
-      "pymysql",
-      user=IAM_USER,
-      password=credentials.token,
-      db="", # log in to instance but don't connect to specific database
+        INSTANCE_CONNECTION_NAME,
+        "pymysql",
+        user=DB_USER,
+        password=DB_PASS,
+        db=DB_NAME
     )
     return conn
 
-# create connection pool
+# create connection pool with 'creator' argument to our connection object function
 pool = sqlalchemy.create_engine(
     "mysql+pymysql://",
-    creator=getconn,
-)
+    creator=getconn,)
+
 meta_data = MetaData()
