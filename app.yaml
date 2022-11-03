@@ -1,6 +1,3 @@
 runtime: python39
 entrypoint: gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app
 service_account: p792166336823-nch0yo@gcp-sa-cloud-sql.iam.gserviceaccount.com
-vpc_access_connector:
-  name: "fastapi-lawyer-project1:us-central1:fastapi-lawyer1"
-  egress_setting: all-traffic
